@@ -1,0 +1,54 @@
+{
+  "enemies": [
+    {
+      "id": "green_spider",
+      "displayName": "Grüne Spinne",
+      "type": "Standard",
+      "stats": { "health": 30, "speed": 4.0, "attackPower": 5, "pointValue": 50 },
+      "prefabResourcePath": "Enemies/GreenSpider",
+      "aiBehaviorId": "swarm_unit",
+      "alwaysRespawns": true,
+      "bossPhases": 1
+    },
+    {
+      "id": "android_soldier",
+      "displayName": "Android-Soldat",
+      "type": "Standard",
+      "stats": { "health": 80, "speed": 3.0, "attackPower": 12, "pointValue": 150 },
+      "prefabResourcePath": "Enemies/AndroidSoldier",
+      "aiBehaviorId": "patrol_guard",
+      "alwaysRespawns": false,
+      "bossPhases": 1
+    },
+    {
+      "id": "seytania",
+      "displayName": "Seytania",
+      "type": "Boss",
+      "stats": { "health": 500, "speed": 2.0, "attackPower": 40, "pointValue": 5000 },
+      "prefabResourcePath": "Enemies/Seytania",
+      "aiBehaviorId": "boss_standard",
+      "alwaysRespawns": false,
+      "bossPhases": 3
+    }
+  ],
+  "waves": [
+    {
+      "id": "wave_spiders_01",
+      "displayName": "Spinnen-Angriff",
+      "enemies": [
+        { "enemyId": "green_spider", "count": 5 }
+      ],
+      "timeBetweenSpawns": 1.5,
+      "loop": false
+    },
+    {
+      "id": "wave_androids_01",
+      "displayName": "Android-Patrouille",
+      "enemies": [
+        { "enemyId": "android_soldier", "count": 3 }
+      ],
+      "timeBetweenSpawns": 2.0,
+      "loop": false
+    }
+  ]
+}
