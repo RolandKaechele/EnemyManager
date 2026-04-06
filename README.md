@@ -246,6 +246,7 @@ Requires `ENEMYMANAGER_EM` define and [EventManager](https://github.com/RolandKa
 | `ENEMYMANAGER_MLF` | MapLoaderFramework | Abort wave and clear instances on chapter change |
 | `ENEMYMANAGER_EM` | EventManager | Fire `enemy.*` events |
 | `EVENTMANAGER_ENM` | EventManager | EventManager re-broadcasts enemy events |
+| `SPAWNMANAGER_EEM` | SpawnManager | SpawnManager notifies EnemyManager when a spawn definition matches a registered enemy |
 | `ODIN_INSPECTOR` | Odin Inspector (Asset Store) | `SerializedMonoBehaviour`; `[ReadOnly]` on runtime fields |
 
 
