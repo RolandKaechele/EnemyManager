@@ -250,6 +250,38 @@ Requires `ENEMYMANAGER_EM` define and [EventManager](https://github.com/RolandKa
 | `ODIN_INSPECTOR` | Odin Inspector (Asset Store) | `SerializedMonoBehaviour`; `[ReadOnly]` on runtime fields |
 
 
+## Editor Tools — Prefab Generation
+
+`EnemyManagerEditor.cs` in `Editor/` doubles as a prefab generator.
+`EnemyPrefabHelper` reads `StreamingAssets/enemies.json` and outputs one prefab per `EnemyDefinition` into `Assets/Resources/Prefabs/Enemies/`.
+
+**Manual**
+
+- **Generate Prefabs → Enemies** in the Unity menu bar
+- **Generate Prefabs → All** (`Ctrl+Shift+G`) — regenerates all registered prefab generators in one step
+
+**Automatic**
+Saving `enemies.json` triggers `EnemyPrefabPostprocessor` via `AssetPostprocessor.OnPostprocessAllAssets` — no manual action required.
+
+**What is generated per prefab**
+
+| Component | Details |
+| --------- | ------- |
+| `SpriteRenderer` | `sortingOrder` 0 (1 for Boss); loads `Resources/Enemies/<id>_sprite` if present |
+| `Animator` | Loads `Resources/Animators/<id>_controller` if present |
+| `Rigidbody2D` | Dynamic, Continuous collision, freeze rotation Z |
+| `CapsuleCollider2D` | Hitbox, 0.8 × 1.2 |
+| `CircleCollider2D` | Detection trigger, radius 1.5 (Swarm) / 2.5 (Standard) / 3.0 (Elite) / 4.0 (Boss) |
+| `AudioSource` | `playOnAwake = false` |
+| Tag / Layer | `Enemy` tag, `Enemies` layer — auto-registered in TagManager if absent |
+| Phase children | Boss prefabs get `Phase_1 … Phase_N` child GameObjects (count from `bossPhases`) |
+
+> Generated prefabs are starting points. Wire sprites, `AnimatorController` assets, and gameplay AI scripts before shipping.
+
+**ODIN Inspector compatibility**
+When `ODIN_INSPECTOR` is defined, `EnemyManagerEditor` inherits `OdinEditor` so the full ODIN property tree (including `[OdinSerialize]` fields) is rendered. The prefab generation helpers are plain static classes and are completely ODIN-independent.
+
+
 ## Dependencies
 
 | Dependency | Required | Notes |
