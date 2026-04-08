@@ -32,19 +32,17 @@ namespace EnemyManager.Runtime
         private void OnEnable()
         {
             if (_csm == null) return;
-            _csm.OnCutsceneStarted   += OnCutsceneStarted;
-            _csm.OnCutsceneCompleted += OnCutsceneEnded;
-            _csm.OnCutsceneAborted   += OnCutsceneEnded;
-            _csm.OnCutsceneSkipped   += OnCutsceneEnded;
+            _csm.OnSequenceStarted   += OnCutsceneStarted;
+            _csm.OnSequenceCompleted += OnCutsceneEnded;
+            _csm.OnSequenceSkipped   += OnCutsceneEnded;
         }
 
         private void OnDisable()
         {
             if (_csm == null) return;
-            _csm.OnCutsceneStarted   -= OnCutsceneStarted;
-            _csm.OnCutsceneCompleted -= OnCutsceneEnded;
-            _csm.OnCutsceneAborted   -= OnCutsceneEnded;
-            _csm.OnCutsceneSkipped   -= OnCutsceneEnded;
+            _csm.OnSequenceStarted   -= OnCutsceneStarted;
+            _csm.OnSequenceCompleted -= OnCutsceneEnded;
+            _csm.OnSequenceSkipped   -= OnCutsceneEnded;
         }
 
         private void OnCutsceneStarted(string sequenceId) => _em?.PauseSpawning();
