@@ -282,6 +282,21 @@ Saving `enemies.json` triggers `EnemyPrefabPostprocessor` via `AssetPostprocesso
 When `ODIN_INSPECTOR` is defined, `EnemyManagerEditor` inherits `OdinEditor` so the full ODIN property tree (including `[OdinSerialize]` fields) is rendered. The prefab generation helpers are plain static classes and are completely ODIN-independent.
 
 
+## JSON Editor Window
+
+Open via **JSON Editors → Enemy Manager** in the Unity menu bar, or via the **Open JSON Editor** button in the EnemyManager Inspector.
+
+Edits two arrays in `StreamingAssets/enemies.json`: **Enemies** (`EnemyDefinition`) and **Waves** (`WaveDefinition`).
+
+| Action | Result |
+| ------ | ------ |
+| **Load** | Reads `StreamingAssets/enemies.json`; creates the file if missing |
+| **Edit** | Add / remove / reorder enemies and waves using the Inspector list |
+| **Save** | Writes back to `StreamingAssets/enemies.json` and calls `AssetDatabase.Refresh()` |
+
+With **ODIN_INSPECTOR** active, lists use Odin's enhanced drawer (drag-to-sort, collapsible entries).
+
+
 ## Dependencies
 
 | Dependency | Required | Notes |

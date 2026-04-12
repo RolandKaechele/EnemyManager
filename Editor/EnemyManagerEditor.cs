@@ -33,6 +33,9 @@ namespace EnemyManager.Editor
             // inheriting from OdinEditor, or the standard Unity inspector otherwise.
             base.OnInspectorGUI();
 
+            EditorGUILayout.Space(4);
+            if (GUILayout.Button("Open JSON Editor")) EnemyJsonEditorWindow.ShowWindow();
+
             EditorGUILayout.Space(6);
 
             var loadFromJsonProp = serializedObject.FindProperty("loadFromJson");
