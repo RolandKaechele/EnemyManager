@@ -1,0 +1,16 @@
+﻿{
+    "waves":  [
+                  {
+                      "id":  "wave_androids_01",
+                      "displayName":  "Android-Patrouille",
+                      "enemies":  [
+                                      {
+                                          "enemyId":  "android_soldier",
+                                          "count":  3
+                                      }
+                                  ],
+                      "timeBetweenSpawns":  2.0,
+                      "loop":  false
+                  }
+              ]
+}

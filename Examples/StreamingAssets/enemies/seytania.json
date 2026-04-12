@@ -1,0 +1,19 @@
+﻿{
+    "enemies":  [
+                    {
+                        "id":  "seytania",
+                        "displayName":  "Seytania",
+                        "type":  "Boss",
+                        "stats":  {
+                                      "health":  500,
+                                      "speed":  2.0,
+                                      "attackPower":  40,
+                                      "pointValue":  5000
+                                  },
+                        "prefabResourcePath":  "Prefabs/Enemies/Seytania",
+                        "aiBehaviorId":  "boss_aggressive",
+                        "alwaysRespawns":  false,
+                        "bossPhases":  3
+                    }
+                ]
+}

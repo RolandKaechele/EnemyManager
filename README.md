@@ -48,7 +48,7 @@ cd Assets/EnemyManager
 npm install
 ```
 
-`postinstall.js` creates the required `StreamingAssets/` folder and optionally copies example JSON files (`enemies.json`, `waves.json`).
+`postinstall.js` creates the required `StreamingAssets/` folder and optionally copies example JSON files to `enemies/` and `waves/`.
 
 
 ## Scene Setup
@@ -264,7 +264,7 @@ Requires `ENEMYMANAGER_EM` define and [EventManager](https://github.com/RolandKa
 ## Editor Tools — Prefab Generation
 
 `EnemyManagerEditor.cs` in `Editor/` doubles as a prefab generator.
-`EnemyPrefabHelper` reads `StreamingAssets/enemies.json` and outputs one prefab per `EnemyDefinition` into `Assets/Resources/Prefabs/Enemies/`.
+`EnemyPrefabHelper` reads all `*.json` from `StreamingAssets/enemies/` and outputs one prefab per `EnemyDefinition` into `Assets/Resources/Prefabs/Enemies/`.
 
 **Manual**
 
@@ -272,7 +272,7 @@ Requires `ENEMYMANAGER_EM` define and [EventManager](https://github.com/RolandKa
 - **Generate Prefabs → All** (`Ctrl+Shift+G`) — regenerates all registered prefab generators in one step
 
 **Automatic**
-Saving `enemies.json` triggers `EnemyPrefabPostprocessor` via `AssetPostprocessor.OnPostprocessAllAssets` — no manual action required.
+Saving any `.json` file to `StreamingAssets/enemies/` triggers `EnemyPrefabPostprocessor` via `AssetPostprocessor.OnPostprocessAllAssets` — no manual action required.
 
 **What is generated per prefab**
 
@@ -297,13 +297,13 @@ When `ODIN_INSPECTOR` is defined, `EnemyManagerEditor` inherits `OdinEditor` so 
 
 Open via **JSON Editors → Enemy Manager** in the Unity menu bar, or via the **Open JSON Editor** button in the EnemyManager Inspector.
 
-Edits enemies and waves stored in two separate files: `StreamingAssets/enemies.json` (`EnemyDefinition`) and `StreamingAssets/waves.json` (`WaveDefinition`).
+Edits enemies and waves stored as per-entity files in `StreamingAssets/enemies/` (`EnemyDefinition`) and `StreamingAssets/waves/` (`WaveDefinition`).
 
 | Action | Result |
 | ------ | ------ |
-| **Load** | Reads `enemies.json` and `waves.json`; creates missing files automatically |
+| **Load** | Reads all `*.json` from `StreamingAssets/enemies/` and `StreamingAssets/waves/`; creates missing folders automatically |
 | **Edit** | Add / remove / reorder enemies and waves using the Inspector list |
-| **Save** | Writes enemies to `enemies.json` and waves to `waves.json`; calls `AssetDatabase.Refresh()` |
+| **Save** | Writes each enemy as `<id>.json` to `StreamingAssets/enemies/` and each wave as `<id>.json` to `StreamingAssets/waves/`; entries without an `id` are skipped. Calls `AssetDatabase.Refresh()` |
 
 With **ODIN_INSPECTOR** active, lists use Odin's enhanced drawer (drag-to-sort, collapsible entries).
 

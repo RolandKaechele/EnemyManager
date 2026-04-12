@@ -1,0 +1,19 @@
+﻿{
+    "enemies":  [
+                    {
+                        "id":  "green_spider",
+                        "displayName":  "GrÃ¼ne Spinne",
+                        "type":  "Swarm",
+                        "stats":  {
+                                      "health":  30,
+                                      "speed":  4.0,
+                                      "attackPower":  5,
+                                      "pointValue":  50
+                                  },
+                        "prefabResourcePath":  "Prefabs/Enemies/GreenSpider",
+                        "aiBehaviorId":  "spider_drone",
+                        "alwaysRespawns":  true,
+                        "bossPhases":  1
+                    }
+                ]
+}

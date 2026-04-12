@@ -19,10 +19,8 @@ namespace EnemyManager.Editor
     /// </summary>
     public class EnemyJsonEditorWindow : EditorWindow
     {
-        private const string EnemiesFolderName   = "enemies";
-        private const string EnemiesSaveFileName  = "enemies.json";
-        private const string WavesFolderName      = "waves";
-        private const string WavesSaveFileName    = "waves.json";
+        private const string EnemiesFolderName = "enemies";
+        private const string WavesFolderName   = "waves";
 
         private EnemyRosterEditorBridge  _bridge;
         private UnityEditor.Editor       _bridgeEditor;
@@ -92,7 +90,6 @@ namespace EnemyManager.Editor
                 else
                 {
                     Directory.CreateDirectory(enemyFolder);
-                    File.WriteAllText(Path.Combine(enemyFolder, EnemiesSaveFileName), JsonUtility.ToJson(new EnemyRosterEditorWrapper(), true));
                     AssetDatabase.Refresh();
                 }
 
@@ -108,7 +105,6 @@ namespace EnemyManager.Editor
                 else
                 {
                     Directory.CreateDirectory(wavesFolder);
-                    File.WriteAllText(Path.Combine(wavesFolder, WavesSaveFileName), JsonUtility.ToJson(new WaveRosterEditorWrapper(), true));
                     AssetDatabase.Refresh();
                 }
 
@@ -127,16 +123,28 @@ namespace EnemyManager.Editor
             {
                 string enemyFolder = Path.Combine(Application.streamingAssetsPath, EnemiesFolderName);
                 if (!Directory.Exists(enemyFolder)) Directory.CreateDirectory(enemyFolder);
-                var ew = new EnemyRosterEditorWrapper { enemies = _bridge.enemies.ToArray() };
-                File.WriteAllText(Path.Combine(enemyFolder, EnemiesSaveFileName), JsonUtility.ToJson(ew, true));
+                int savedEnemies = 0;
+                foreach (var entry in _bridge.enemies)
+                {
+                    if (string.IsNullOrEmpty(entry.id)) continue;
+                    var ew = new EnemyRosterEditorWrapper { enemies = new[] { entry } };
+                    File.WriteAllText(Path.Combine(enemyFolder, $"{entry.id}.json"), JsonUtility.ToJson(ew, true));
+                    savedEnemies++;
+                }
 
                 string wavesFolder = Path.Combine(Application.streamingAssetsPath, WavesFolderName);
                 if (!Directory.Exists(wavesFolder)) Directory.CreateDirectory(wavesFolder);
-                var ww = new WaveRosterEditorWrapper { waves = _bridge.waves.ToArray() };
-                File.WriteAllText(Path.Combine(wavesFolder, WavesSaveFileName), JsonUtility.ToJson(ww, true));
+                int savedWaves = 0;
+                foreach (var entry in _bridge.waves)
+                {
+                    if (string.IsNullOrEmpty(entry.id)) continue;
+                    var ww = new WaveRosterEditorWrapper { waves = new[] { entry } };
+                    File.WriteAllText(Path.Combine(wavesFolder, $"{entry.id}.json"), JsonUtility.ToJson(ww, true));
+                    savedWaves++;
+                }
 
                 AssetDatabase.Refresh();
-                _status = $"Saved {_bridge.enemies.Count} enemies to {EnemiesFolderName}/{EnemiesSaveFileName}, {_bridge.waves.Count} waves to {WavesFolderName}/{WavesSaveFileName}.";
+                _status = $"Saved {savedEnemies} enemy file(s) to {EnemiesFolderName}/, {savedWaves} wave file(s) to {WavesFolderName}/";
                 _statusError = false;
             }
             catch (Exception e) { _status = $"Save error: {e.Message}"; _statusError = true; }
