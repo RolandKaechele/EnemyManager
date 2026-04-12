@@ -148,6 +148,11 @@ namespace EnemyManager.Runtime
     internal class EnemyRosterJson
     {
         public List<EnemyDefinition> enemies = new List<EnemyDefinition>();
-        public List<WaveDefinition>  waves   = new List<WaveDefinition>();
+    }
+
+    [Serializable]
+    internal class WaveRosterJson
+    {
+        public List<WaveDefinition> waves = new List<WaveDefinition>();
     }
 }

@@ -65,8 +65,11 @@ namespace EnemyManager.Runtime
         [Tooltip("When enabled, merge definitions and waves from a JSON file in StreamingAssets/ at startup.")]
         [SerializeField] private bool loadFromJson = false;
 
-        [Tooltip("Path relative to StreamingAssets/ (e.g. 'enemies.json').")]
-        [SerializeField] private string jsonPath = "enemies.json";
+        [Tooltip("Path relative to StreamingAssets/ for enemy definitions (e.g. 'enemies/' or 'enemies.json').")]
+        [SerializeField] private string jsonPath = "enemies/";
+
+        [Tooltip("Path relative to StreamingAssets/ for wave definitions (e.g. 'waves/' or 'waves.json').")]
+        [SerializeField] private string waveJsonPath = "waves/";
 
         [Header("Debug")]
         [Tooltip("Log all spawns, defeats, and wave events to the Unity Console.")]
@@ -376,39 +379,74 @@ namespace EnemyManager.Runtime
 
         private void LoadJson()
         {
-            string path = Path.Combine(Application.streamingAssetsPath, jsonPath);
-            if (!File.Exists(path))
+            // ── Load enemy definitions ────────────────────────────────────────
+            string enemyFullPath = Path.Combine(Application.streamingAssetsPath, jsonPath);
+            if (Directory.Exists(enemyFullPath))
             {
-                Debug.LogWarning($"[EnemyManager] JSON not found: {path}");
-                return;
+                foreach (var file in Directory.GetFiles(enemyFullPath, "*.json", SearchOption.TopDirectoryOnly))
+                    MergeEnemiesFromFile(file);
             }
+            else if (File.Exists(enemyFullPath))
+            {
+                MergeEnemiesFromFile(enemyFullPath);
+            }
+            else
+            {
+                Debug.LogWarning($"[EnemyManager] Enemy JSON not found: {enemyFullPath}");
+            }
+
+            // ── Load wave definitions ─────────────────────────────────────────
+            string waveFullPath = Path.Combine(Application.streamingAssetsPath, waveJsonPath);
+            if (Directory.Exists(waveFullPath))
+            {
+                foreach (var file in Directory.GetFiles(waveFullPath, "*.json", SearchOption.TopDirectoryOnly))
+                    MergeWavesFromFile(file);
+            }
+            else if (File.Exists(waveFullPath))
+            {
+                MergeWavesFromFile(waveFullPath);
+            }
+            else
+            {
+                Debug.LogWarning($"[EnemyManager] Wave JSON not found: {waveFullPath}");
+            }
+        }
+
+        private void MergeEnemiesFromFile(string path)
+        {
             try
             {
                 var roster = JsonUtility.FromJson<EnemyRosterJson>(File.ReadAllText(path));
-
-                if (roster?.enemies != null)
+                if (roster?.enemies == null) return;
+                foreach (var e in roster.enemies)
                 {
-                    foreach (var e in roster.enemies)
-                    {
-                        if (e == null || string.IsNullOrEmpty(e.id)) continue;
-                        _enemyIndex[e.id] = e;
-                    }
+                    if (e == null || string.IsNullOrEmpty(e.id)) continue;
+                    _enemyIndex[e.id] = e;
                 }
-
-                if (roster?.waves != null)
-                {
-                    foreach (var w in roster.waves)
-                    {
-                        if (w == null || string.IsNullOrEmpty(w.id)) continue;
-                        _waveIndex[w.id] = w;
-                    }
-                }
-
-                Debug.Log($"[EnemyManager] Roster merged from {path}.");
+                Debug.Log($"[EnemyManager] Merged enemies from {path}.");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[EnemyManager] Failed to parse {jsonPath}: {ex.Message}");
+                Debug.LogError($"[EnemyManager] Failed to load JSON: {ex.Message}");
+            }
+        }
+
+        private void MergeWavesFromFile(string path)
+        {
+            try
+            {
+                var waveRoster = JsonUtility.FromJson<WaveRosterJson>(File.ReadAllText(path));
+                if (waveRoster?.waves == null) return;
+                foreach (var w in waveRoster.waves)
+                {
+                    if (w == null || string.IsNullOrEmpty(w.id)) continue;
+                    _waveIndex[w.id] = w;
+                }
+                Debug.Log($"[EnemyManager] Merged waves from {path}.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[EnemyManager] Failed to load JSON: {ex.Message}");
             }
         }
     }

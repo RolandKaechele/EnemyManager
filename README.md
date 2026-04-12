@@ -12,7 +12,7 @@ Manages enemy definitions, live instances, wave-based spawning, defeat tracking,
 - **Live instance tracking** — each spawned enemy gets a unique instance id; query or defeat by id
 - **Defeat registry** — record defeated enemies in-memory; persist via SaveManager bridge
 - **Pause / resume spawning** — block spawning during cutscenes, dialogue, or menu states
-- **JSON / Modding** — merge enemy and wave definitions from `StreamingAssets/enemies.json` at startup
+- **JSON / Modding** — merge enemy definitions from `StreamingAssets/enemies/` and wave definitions from `StreamingAssets/waves/` at startup
 - **AiManager integration** — register spawned enemies with AiManager; escalate alert on wave start (activated via `ENEMYMANAGER_AIM`)
 - **SaveManager integration** — persist defeated enemy ids as save flags (activated via `ENEMYMANAGER_SM`)
 - **CutsceneManager integration** — pause/resume spawning on cutscene start/end (activated via `ENEMYMANAGER_CSM`)
@@ -48,7 +48,7 @@ cd Assets/EnemyManager
 npm install
 ```
 
-`postinstall.js` creates the required `StreamingAssets/` folder and optionally copies example JSON files.
+`postinstall.js` creates the required `StreamingAssets/` folder and optionally copies example JSON files (`enemies.json`, `waves.json`).
 
 
 ## Scene Setup
@@ -67,8 +67,9 @@ npm install
 | `enemies` | *(empty)* | Enemy definition list |
 | `waves` | *(empty)* | Wave definition list |
 | `spawnParent` | `null` | Parent transform for spawned enemies |
-| `loadFromJson` | `false` | Merge from `StreamingAssets/enemies.json` on Awake |
-| `jsonPath` | `"enemies.json"` | Path relative to `StreamingAssets/` |
+| `loadFromJson` | `false` | Merge from `StreamingAssets/` JSON files on Awake |
+| `jsonPath` | `"enemies/"` | Folder relative to `StreamingAssets/` containing `.json` files to merge. Falls back to single-file mode if the value points to an existing file. |
+| `waveJsonPath` | `"waves/"` | Folder relative to `StreamingAssets/` containing `.json` files to merge. Falls back to single-file mode if the value points to an existing file. |
 | `verboseLogging` | `false` | Log all spawns/defeats to the Console |
 
 ### 2. EnemyDefinition fields
@@ -129,7 +130,10 @@ em.OnWaveAborted    += waveId => Debug.Log($"Wave aborted: {waveId}");
 
 ## JSON / Modding
 
-Enable `loadFromJson` and place `enemies.json` in `StreamingAssets/`:
+Enable `loadFromJson` and place one or more `.json` files in `StreamingAssets/enemies/` and `StreamingAssets/waves/`.
+All `*.json` files in each folder are loaded and merged by `id` at startup.
+
+**`StreamingAssets/enemies/`** — enemy definitions (example: `StreamingAssets/enemies/main.json`):
 
 ```json
 {
@@ -139,12 +143,19 @@ Enable `loadFromJson` and place `enemies.json` in `StreamingAssets/`:
       "displayName": "Grüne Spinne",
       "type": "Swarm",
       "stats": { "health": 30, "speed": 4.0, "attackPower": 5, "pointValue": 50 },
-      "prefabResourcePath": "Enemies/GreenSpider",
-      "aiBehaviorId": "swarm_unit",
+      "prefabResourcePath": "Prefabs/Enemies/GreenSpider",
+      "aiBehaviorId": "spider_drone",
       "alwaysRespawns": true,
       "bossPhases": 1
     }
-  ],
+  ]
+}
+```
+
+**`StreamingAssets/waves/`** — wave definitions (example: `StreamingAssets/waves/main.json`):
+
+```json
+{
   "waves": [
     {
       "id": "wave_spiders_01",
@@ -286,13 +297,13 @@ When `ODIN_INSPECTOR` is defined, `EnemyManagerEditor` inherits `OdinEditor` so 
 
 Open via **JSON Editors → Enemy Manager** in the Unity menu bar, or via the **Open JSON Editor** button in the EnemyManager Inspector.
 
-Edits two arrays in `StreamingAssets/enemies.json`: **Enemies** (`EnemyDefinition`) and **Waves** (`WaveDefinition`).
+Edits enemies and waves stored in two separate files: `StreamingAssets/enemies.json` (`EnemyDefinition`) and `StreamingAssets/waves.json` (`WaveDefinition`).
 
 | Action | Result |
 | ------ | ------ |
-| **Load** | Reads `StreamingAssets/enemies.json`; creates the file if missing |
+| **Load** | Reads `enemies.json` and `waves.json`; creates missing files automatically |
 | **Edit** | Add / remove / reorder enemies and waves using the Inspector list |
-| **Save** | Writes back to `StreamingAssets/enemies.json` and calls `AssetDatabase.Refresh()` |
+| **Save** | Writes enemies to `enemies.json` and waves to `waves.json`; calls `AssetDatabase.Refresh()` |
 
 With **ODIN_INSPECTOR** active, lists use Odin's enhanced drawer (drag-to-sort, collapsible entries).
 
