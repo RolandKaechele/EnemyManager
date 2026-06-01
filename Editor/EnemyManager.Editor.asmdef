@@ -3,7 +3,8 @@
     "rootNamespace": "EnemyManager.Editor",
     "references": [
         "EnemyManager.Runtime",
-        "PrefabGenerator.Editor"
+        "PrefabGenerator.Editor",
+        "UnityEngine.UI"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [
